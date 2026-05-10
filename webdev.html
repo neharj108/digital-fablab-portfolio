@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Web Development Module | Neha Rajput</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --cyan: #00d4ff;
+    --violet: #7c3aed;
+    --violet-light: #a855f7;
+    --bg: #05080f;
+    --bg2: #0a0f1e;
+    --card: rgba(255,255,255,0.04);
+    --card-border: rgba(255,255,255,0.08);
+    --text: #e8ecf4;
+    --muted: #8892aa;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.5;
+  }
+
+  .site-header {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    padding: 18px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+    background: rgba(5,8,15,0.6);
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .logo-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    background: linear-gradient(90deg, var(--cyan), var(--violet-light));
+    -webkit-background-clip: text;
+    color: transparent;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-back {
+    padding: 10px 22px;
+    border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--card-border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-back:hover {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    background: rgba(0,212,255,0.06);
+  }
+
+  .page-hero {
+    position: relative;
+    padding: 160px 10% 90px;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.3;
+    animation: float 8s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+  .blob-1 { width: 400px; height: 400px; background: radial-gradient(circle, #7c3aed, transparent 70%); top: -80px; left: -80px; }
+  .blob-2 { width: 350px; height: 350px; background: radial-gradient(circle, #00d4ff, transparent 70%); bottom: -60px; right: -60px; animation-delay: -4s; }
+  @keyframes float {
+    from { transform: translate(0,0) scale(1); }
+    to   { transform: translate(30px,20px) scale(1.06); }
+  }
+
+  .page-hero-content { position: relative; z-index: 1; }
+
+  .hero-label {
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .page-hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(40px, 7vw, 80px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    background: linear-gradient(135deg, #fff 30%, var(--cyan) 60%, var(--violet-light) 100%);
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .page-hero > .page-hero-content > p {
+    margin-top: 16px;
+    font-size: 16px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  .badge-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--card-border);
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  .badge-active {
+    background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(124,58,237,0.15));
+    border-color: rgba(0,212,255,0.4);
+    color: var(--cyan);
+  }
+
+  .section-divider {
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--cyan), var(--violet));
+    border-radius: 3px;
+    margin: 0 auto;
+  }
+
+  .container {
+    padding: 60px 10% 100px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .day {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+    padding: 40px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .day.visible { opacity: 1; transform: translateY(0); }
+
+  .day::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  }
+
+  .day:hover {
+    border-color: rgba(0,212,255,0.25);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4), 0 0 30px rgba(0,212,255,0.06);
+  }
+
+  .day-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .day-number {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 100px;
+    background: linear-gradient(135deg, var(--cyan), var(--violet));
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .day-line { flex: 1; height: 1px; background: var(--card-border); }
+
+  .day h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #fff, var(--violet-light));
+    -webkit-background-clip: text;
+    color: transparent;
+    margin-bottom: 6px;
+  }
+
+  .day-subtitle {
+    font-size: 13px;
+    color: var(--cyan);
+    letter-spacing: 0.3px;
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .day-points {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 28px;
+    border-left: 2px solid rgba(0,212,255,0.3);
+    padding-left: 16px;
+  }
+
+  .day-points li {
+    color: #b0bcd4;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .day-points li code {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    background: rgba(0,212,255,0.08);
+    color: var(--cyan);
+    padding: 1px 6px;
+    border-radius: 4px;
+    border: 1px solid rgba(0,212,255,0.15);
+  }
+
+  .img-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+
+  .img-wrap {
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--card-border);
+    background: var(--bg2);
+    position: relative;
+    aspect-ratio: 4/3;
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .img-wrap:hover {
+    transform: scale(1.02);
+    border-color: rgba(0,212,255,0.3);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  }
+
+  .img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .img-label {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 8px 12px;
+    background: linear-gradient(to top, rgba(5,8,15,0.9), transparent);
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--card-border);
+    padding: 40px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  footer span {
+    background: linear-gradient(90deg, var(--cyan), var(--violet-light));
+    -webkit-background-clip: text;
+    color: transparent;
+    font-weight: 600;
+  }
+
+  @media (max-width: 768px) {
+    .site-header { padding: 16px 24px; }
+    .page-hero { padding: 130px 6% 70px; }
+    .container { padding: 40px 6% 80px; }
+    .day { padding: 28px 24px; }
+    .img-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <span class="logo-text">FABLAB × NEHA</span>
+  <a href="index.html" class="btn-back">← Back to Portfolio</a>
+</header>
+
+<section class="page-hero">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="page-hero-content">
+    <p class="hero-label">FabLab Module</p>
+    <h1>Web Development</h1>
+    <div class="badge-row">
+      <span class="badge badge-active">✦ Completed</span>
+      <span class="badge">🌐 HTML &amp; CSS</span>
+      <span class="badge">⚡ JavaScript</span>
+      <span class="badge">7 Days</span>
+    </div>
+  </div>
+</section>
+
+<div style="padding: 0 10%; max-width:1200px; margin:0 auto;">
+  <div class="section-divider"></div>
+</div>
+
+<div class="container">
+
+  <!-- DAY 1 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 01</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>HTML Foundations</h2>
+    <p class="day-subtitle">Introduction to the building blocks of every webpage — writing your very first HTML document.</p>
+    <ul class="day-points">
+      <li>Set up VS Code &amp; created <code>first.html</code> file</li>
+      <li>Used tags: <code>p</code>, <code>b</code>, <code>i</code>, <code>u</code>, <code>br</code>, <code>hr</code></li>
+      <li>Text effects with <code>marquee</code>, <code>sub</code>, <code>sup</code></li>
+      <li>Understood HTML document structure &amp; nesting</li>
+      <li>Practiced heading tags <code>h1</code>–<code>h6</code> &amp; paragraphs</li>
+    </ul>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <img src="day1.png" alt="Day 1 Output" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+        <div class="img-label">Output</div>
+      </div>
+      <div class="img-wrap">
+        <img src="1stday.jpeg" alt="Day 1 Session" onerror="this.parentElement.style.background='rgba(124,58,237,0.05)'">
+        <div class="img-label">Code</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 2 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 02</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>Image, Anchor, Media &amp; Table</h2>
+    <p class="day-subtitle">Embedding rich content and linking pages — making HTML truly interactive and visual.</p>
+    <ul class="day-points">
+      <li>Inserted images in table with <code>&lt;img&gt;</code> &amp; attributes</li>
+      <li>Created hyperlinks using <code>&lt;a href&gt;</code></li>
+      <li>Embedded video &amp; audio with <code>&lt;video&gt;</code>, <code>&lt;audio&gt;</code></li>
+      <li>Built structured data tables — rows, cols, colspan</li>
+      <li>Added table headers, borders &amp; captions</li>
+    </ul>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <img src="day2.png" alt="Day 2 Output" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+        <div class="img-label">Output</div>
+      </div>
+      <div class="img-wrap">
+        <img src="2ndday.jpeg" alt="Day 2 Session" onerror="this.parentElement.style.background='rgba(124,58,237,0.05)'">
+        <div class="img-label">Code</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 3 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 03</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>HTML Forms</h2>
+    <p class="day-subtitle">Collecting user input — the gateway to dynamic and interactive web applications.</p>
+    <ul class="day-points">
+      <li>Built forms with <code>&lt;form&gt;</code>, <code>action</code>, <code>method</code></li>
+      <li>Input types: text, email, password, number, date</li>
+      <li>Used radio buttons, checkboxes &amp; dropdowns</li>
+      <li>Added <code>textarea</code>, <code>submit</code> &amp; <code>reset</code> buttons</li>
+      <li>Applied <code>label</code>, <code>placeholder</code> &amp; <code>required</code></li>
+    </ul>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <img src="day5.png" alt="Day 3 Output" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+        <div class="img-label">Output</div>
+      </div>
+      <div class="img-wrap">
+        <img src="3rdday.jpeg" alt="Day 3 Session" onerror="this.parentElement.style.background='rgba(124,58,237,0.05)'">
+        <div class="img-label">Code</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 4 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 04</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>Header, Nav, Footer &amp; CSS Selectors</h2>
+    <p class="day-subtitle">Structuring pages semantically and targeting elements with the full power of CSS.</p>
+    <ul class="day-points">
+      <li>Semantic tags: <code>header</code>, <code>nav</code>, <code>footer</code>, <code>main</code></li>
+      <li>CSS selectors: element, class <code>(.)</code>, ID <code>(#)</code></li>
+      <li>Pseudo-classes: <code>:hover</code>, <code>:first-child</code>, <code>:nth-child</code></li>
+      <li>Attribute selectors &amp; combinator selectors</li>
+      <li>Styled a full-page layout with nav &amp; footer</li>
+    </ul>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <img src="day3.png" alt="Day 4 Output" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+        <div class="img-label">Output</div>
+      </div>
+      <div class="img-wrap">
+        <img src="4thday.jpeg" alt="Day 4 Session" onerror="this.parentElement.style.background='rgba(124,58,237,0.05)'">
+        <div class="img-label">Code</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 5 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 05</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>Box Model &amp; Flexbox</h2>
+    <p class="day-subtitle">Mastering layout — understanding spacing and building flexible, responsive arrangements.</p>
+    <ul class="day-points">
+      <li>Box Model: <code>margin</code>, <code>border</code>, <code>padding</code>, <code>content</code></li>
+      <li><code>box-sizing: border-box</code> explained</li>
+      <li>Flexbox: <code>display: flex</code>, <code>flex-direction</code></li>
+      <li><code>justify-content</code>, <code>align-items</code>, <code>gap</code></li>
+      <li>Built a responsive card layout using Flexbox</li>
+    </ul>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <img src="day4.png" alt="Day 5 Output" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+        <div class="img-label">Output</div>
+      </div>
+      <div class="img-wrap">
+        <img src="5thday.jpeg" alt="Day 5 Session" onerror="this.parentElement.style.background='rgba(124,58,237,0.05)'">
+        <div class="img-label">Code</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 6 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 06</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>JavaScript Basics &amp; All Operations</h2>
+    <p class="day-subtitle">Bringing pages to life — writing logic, manipulating the DOM, and handling all core JS operations.</p>
+    <ul class="day-points">
+      <li>Variables: <code>var</code>, <code>let</code>, <code>const</code> &amp; data types</li>
+      <li>Arithmetic, comparison &amp; logical operators</li>
+      <li>Conditionals: <code>if/else</code>, <code>switch</code></li>
+      <li>Loops: <code>for</code>, <code>while</code>, <code>do-while</code></li>
+      <li>Functions, DOM selection &amp; event listeners</li>
+    </ul>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <img src="day6.png" alt="Day 6 Output" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+        <div class="img-label">Output</div>
+      </div>
+      <div class="img-wrap">
+        <img src="6thday.jpeg" alt="Day 6 Session" onerror="this.parentElement.style.background='rgba(124,58,237,0.05)'">
+        <div class="img-label">Code</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 7 -->
+  <div class="day" style="border-color: rgba(0,212,255,0.2); box-shadow: 0 0 40px rgba(0,212,255,0.06);">
+    <div class="day-header">
+      <span class="day-number">Day 07</span>
+      <div class="day-line"></div>
+      <span class="badge badge-active" style="font-size:11px; flex-shrink:0;">✦ Final Project</span>
+    </div>
+    <h2>To-Do List Project</h2>
+    <p class="day-subtitle">The culmination of everything — combining HTML, CSS, and JavaScript into one complete, deployed web application.</p>
+    <ul class="day-points">
+      <li>Built a full To-Do List app from scratch</li>
+      <li>Add, delete &amp; mark tasks as complete</li>
+      <li>Used <code>localStorage</code> to persist tasks on refresh</li>
+      <li>Applied HTML + CSS + JS together end-to-end</li>
+      <li>Pushed code to GitHub repository</li>
+      <li>Deployed live on GitHub Pages</li>
+    </ul>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <img src="day7.jpeg" alt="Day 7 Output" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+        <div class="img-label">Output</div>
+      </div>
+      <div class="img-wrap">
+        <img src="7thday.jpeg" alt="Day 7 Session" onerror="this.parentElement.style.background='rgba(124,58,237,0.05)'">
+        <div class="img-label">Code</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2026 <span>Neha Rajput</span> · Digital FABLAB Portfolio · SSGMCE Shegaon</p>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.day').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
