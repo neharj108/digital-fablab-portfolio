@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAD Design Module | Neha Rajput</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --cyan: #00d4ff;
+    --violet: #7c3aed;
+    --violet-light: #a855f7;
+    --accent: #00ffb3;
+    --accent2: #ff6b35;
+    --bg: #05080f;
+    --bg2: #0a0f1e;
+    --card: rgba(255,255,255,0.04);
+    --card-border: rgba(255,255,255,0.08);
+    --text: #e8ecf4;
+    --muted: #8892aa;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.5;
+  }
+
+  .site-header {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    padding: 18px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+    background: rgba(5,8,15,0.6);
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .logo-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    background: linear-gradient(90deg, var(--accent), var(--cyan));
+    -webkit-background-clip: text;
+    color: transparent;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-back {
+    padding: 10px 22px;
+    border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--card-border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-back:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(0,255,179,0.06);
+  }
+
+  .page-hero {
+    position: relative;
+    padding: 160px 10% 90px;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.3;
+    animation: float 8s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+  .blob-1 { width: 400px; height: 400px; background: radial-gradient(circle, #00ffb3, transparent 70%); top: -80px; left: -80px; }
+  .blob-2 { width: 350px; height: 350px; background: radial-gradient(circle, #00d4ff, transparent 70%); bottom: -60px; right: -60px; animation-delay: -4s; }
+  @keyframes float {
+    from { transform: translate(0,0) scale(1); }
+    to   { transform: translate(30px,20px) scale(1.06); }
+  }
+
+  .page-hero-content { position: relative; z-index: 1; }
+
+  .hero-label {
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .page-hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(40px, 7vw, 80px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    background: linear-gradient(135deg, #fff 30%, var(--accent) 60%, var(--cyan) 100%);
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .page-hero > .page-hero-content > p {
+    margin-top: 16px;
+    font-size: 16px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  .badge-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--card-border);
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  .badge-active {
+    background: linear-gradient(135deg, rgba(0,255,179,0.15), rgba(0,212,255,0.15));
+    border-color: rgba(0,255,179,0.4);
+    color: var(--accent);
+  }
+
+  .section-divider {
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--cyan));
+    border-radius: 3px;
+    margin: 0 auto;
+  }
+
+  .container {
+    padding: 60px 10% 100px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .day {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+    padding: 40px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .day.visible { opacity: 1; transform: translateY(0); }
+
+  .day::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+
+  .day:hover {
+    border-color: rgba(0,255,179,0.2);
+    box-shadow: 0 8px 40px rgba(0,255,179,0.06);
+  }
+
+  .day-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .day-number {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .day-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(0,255,179,0.3), transparent);
+  }
+
+  .day h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(20px, 3vw, 28px);
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+
+  .day-subtitle {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 24px;
+    max-width: 700px;
+  }
+
+  .day-points {
+    list-style: none;
+    margin-bottom: 28px;
+  }
+
+  .day-points li {
+    font-size: 14px;
+    color: var(--text);
+    padding: 8px 0 8px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    position: relative;
+    line-height: 1.6;
+  }
+
+  .day-points li::before {
+    content: '▹';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+
+  code {
+    background: rgba(0,255,179,0.1);
+    color: var(--accent);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: 'Courier New', monospace;
+    border: 1px solid rgba(0,255,179,0.2);
+  }
+
+  .img-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .img-wrap {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 16/10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s;
+  }
+
+  .img-wrap:hover img { transform: scale(1.04); }
+
+  .img-label {
+    position: absolute;
+    bottom: 10px; left: 10px;
+    background: rgba(5,8,15,0.8);
+    border: 1px solid var(--card-border);
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 100px;
+    text-transform: uppercase;
+  }
+
+  .img-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .img-placeholder svg {
+    opacity: 0.3;
+  }
+
+  .practice-box {
+    background: rgba(0,255,179,0.04);
+    border: 1px solid rgba(0,255,179,0.15);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-top: 20px;
+  }
+
+  .practice-box h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .practice-box ul {
+    list-style: none;
+  }
+
+  .practice-box ul li {
+    font-size: 14px;
+    color: var(--text);
+    padding: 6px 0 6px 20px;
+    position: relative;
+  }
+
+  .practice-box ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 12px;
+  }
+
+  footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--card-border);
+    padding: 40px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  footer span {
+    background: linear-gradient(90deg, var(--accent), var(--cyan));
+    -webkit-background-clip: text;
+    color: transparent;
+    font-weight: 600;
+  }
+
+  @media (max-width: 768px) {
+    .site-header { padding: 16px 24px; }
+    .page-hero { padding: 120px 6% 60px; }
+    .container { padding: 40px 6% 80px; }
+    .day { padding: 28px 24px; }
+    .img-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <span class="logo-text">FABLAB × NEHA</span>
+  <a href="index.html" class="btn-back">← Back to Portfolio</a>
+</header>
+
+<section class="page-hero">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="page-hero-content">
+    <p class="hero-label">Module 03 · Fusion 360</p>
+    <h1>CAD Design</h1>
+    <p>7-Day Fusion 360 Learning Plan — from first sketch to final assembly</p>
+    <div class="badge-row">
+      <span class="badge badge-active">✦ Completed</span>
+      <span class="badge">📐 Fusion 360</span>
+      <span class="badge">7 Days</span>
+      <span class="badge">CAD · CAM · CAE</span>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+
+  <!-- DAY 1 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 01</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>Introduction &amp; Interface</h2>
+    <p class="day-subtitle">Getting started with Fusion 360 — understanding what the software is, exploring the workspace and learning how to navigate the 3D environment before creating a first sketch.</p>
+    <ul class="day-points">
+      <li>Understood what <strong>Fusion 360</strong> is — a unified CAD, CAM, and CAE platform used in product design and engineering</li>
+      <li>Explored the <code>Design</code> workspace and its role in 3D modeling and assemblies</li>
+      <li>Learned the difference between <code>Solid</code>, <code>Surface</code>, and <code>Sheet Metal</code> design environments</li>
+      <li>Practiced viewport navigation — <code>Zoom</code>, <code>Pan</code>, <code>Orbit</code>, and the Home view shortcut</li>
+      <li>Understood the coordinate system — X, Y, Z axes and the origin planes</li>
+      <li>Opened the <code>Sketch</code> environment and selected a plane to begin a 2D sketch</li>
+      <li>Drew basic shapes: <code>Rectangle</code>, <code>Circle</code>, and <code>Line</code> using the sketch toolbar</li>
+      <li>Learned the difference between unconstrained (blue) and fully constrained (black) sketch geometry</li>
+    </ul>
+    <div class="practice-box">
+      <h4>👉 Practice</h4>
+      <ul>
+        <li>Drew basic shapes — rectangle, circle, and line on the XY plane</li>
+        <li>Zoomed, panned, and orbited around the model to get comfortable with navigation</li>
+      </ul>
+    </div>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <img src="cd1.png" alt="Day 1 Output" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+          <span>Output Image</span>
+        </div>
+        <div class="img-label">Output</div>
+      </div>
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <img src="cds1.jpg" alt="Day 1 Session" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+          <span>Session Photo</span>
+        </div>
+        <div class="img-label">Session</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 2 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 02</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>Sketching — 2D Basics</h2>
+    <p class="day-subtitle">Mastering 2D sketching tools and geometric constraints — the essential foundation for any 3D model in Fusion 360.</p>
+    <ul class="day-points">
+      <li>Used core sketch tools: <code>Line</code>, <code>Circle</code>, <code>Arc</code>, and <code>Center Rectangle</code></li>
+      <li>Learned <strong>Constraints</strong> — rules that define relationships between sketch elements</li>
+      <li>Applied <code>Coincident</code> constraint to snap endpoints and curves together precisely</li>
+      <li>Used <code>Parallel</code> and <code>Perpendicular</code> constraints to control line orientation</li>
+      <li>Added <code>Dimensions</code> using the <em>Sketch Dimension</em> tool to fix lengths and angles</li>
+      <li>Understood the difference between over-constrained, under-constrained, and fully constrained sketches</li>
+      <li>Explored the <code>Tangent</code> constraint to smoothly connect arcs to lines</li>
+    </ul>
+    <div class="practice-box">
+      <h4>👉 Practice</h4>
+      <ul>
+        <li>Drew a fully constrained sketch with no blue (unconstrained) lines remaining</li>
+        <li>Applied dimensions to lock the geometry precisely in place</li>
+      </ul>
+    </div>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <img src="cd2.png" alt="day 2 Output" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+          <span>Output Image</span>
+        </div>
+        <div class="img-label">Output</div>
+      </div>
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+         <img src="cds2.jpg" alt="Day 2 Session" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+          <span>Session Photo</span>
+        </div>
+        <div class="img-label">Session</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 3 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 03</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>Advanced Sketch Practice</h2>
+    <p class="day-subtitle">Going deeper into sketching — working with advanced tools to build complex profiles and geometry that would be difficult to draw line by line.</p>
+    <ul class="day-points">
+      <li>Used <code>Offset</code> to create a parallel copy of a sketch profile at a given distance</li>
+      <li>Applied <code>Trim</code> to remove unwanted portions of intersecting geometry</li>
+      <li>Used <code>Extend</code> to stretch a line or arc until it meets another element</li>
+      <li>Explored <code>Mirror</code> — reflected sketch entities across a chosen axis to create symmetrical geometry</li>
+      <li>Used <code>Rectangular Pattern</code> and <code>Circular Pattern</code> inside the sketch environment</li>
+      <li>Practiced building complex multi-feature profiles by combining constraints and modify tools</li>
+    </ul>
+    <div class="practice-box">
+      <h4>👉 Practice</h4>
+      <ul>
+        <li>Drew a simple gear outline using circles, trim, and circular pattern</li>
+        <li>Created a bracket shape profile combining rectangles, arcs, and offset</li>
+      </ul>
+    </div>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <img src="cd3.png" alt="Day 3 Output" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+          <span>Output Image</span>
+        </div>
+        <div class="img-label">Gear Outline</div>
+      </div>
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <img src="cds3.jpg" alt="Day 3 Session" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+          <span>Session Photo</span>
+        </div>
+        <div class="img-label">Session</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 4 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 04</span>
+      <div class="day-line"></div>
+      <span class="badge badge-active" style="font-size:11px; flex-shrink:0;">🚀 Core Day</span>
+    </div>
+    <h2>3D Modeling — Core Day</h2>
+    <p class="day-subtitle">The most important day of the module — converting 2D sketches into real 3D solid bodies using Fusion 360's core modeling tools.</p>
+    <ul class="day-points">
+      <li>Converted a closed 2D sketch profile into a 3D solid using the <code>Extrude</code> tool</li>
+      <li>Used <code>Revolve</code> to spin a profile around an axis — ideal for cylindrical and lathe-turned shapes</li>
+      <li>Explored extrude options: <code>Join</code>, <code>Cut</code>, <code>Intersect</code>, and <code>New Body</code></li>
+      <li>Applied <code>Fillet</code> to round off sharp edges and improve aesthetics and manufacturing feasibility</li>
+      <li>Used <code>Chamfer</code> to create angled bevels on edges — common for mechanical parts</li>
+      <li>Understood the <strong>Timeline</strong> at the bottom — every operation is recorded and can be edited or reordered</li>
+      <li>Explored the <code>Shell</code> tool to hollow out a solid body with a defined wall thickness</li>
+    </ul>
+    <div class="practice-box">
+      <h4>👉 Practice</h4>
+      <ul>
+        <li>Made a cylinder using a circle sketch and Extrude tool</li>
+        <li>Created a bolt-like shape using Revolve on a profile sketch</li>
+        <li>Applied Fillet and Chamfer to the models to refine geometry</li>
+      </ul>
+    </div>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <img src="cd4.png" alt="Day 4 Output" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+          <span>Output Image</span>
+        </div>
+        <div class="img-label">Output</div>
+      </div>
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <img src="cds4.jpg" alt="Day 4 Session" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+          <span>Session Photo</span>
+        </div>
+        <div class="img-label">Session</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 5 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 05</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>Assembly &amp; Motion</h2>
+    <p class="day-subtitle">Moving beyond individual parts — learning how multiple components are assembled together and how joints allow motion simulation in Fusion 360.</p>
+    <ul class="day-points">
+      <li>Understood the difference between <strong>Bodies</strong> (single solid shapes) and <strong>Components</strong> (parts that can be assembled)</li>
+      <li>Created multiple components within a single Fusion 360 design file</li>
+      <li>Used the <code>Joint</code> tool to connect two components and define their relationship</li>
+      <li>Explored joint types: <code>Rigid</code>, <code>Revolute</code>, <code>Slider</code>, <code>Pin-Slot</code>, and <code>Planar</code></li>
+      <li>Ran a <strong>Motion Study</strong> to animate the assembly and preview how parts move relative to each other</li>
+      <li>Learned how to use <code>Ground</code> to fix one component in place as the fixed reference</li>
+      <li>Understood contact sets to prevent components from passing through each other</li>
+    </ul>
+    <div class="practice-box">
+      <h4>👉 Practice</h4>
+      <ul>
+        <li>Created a simple hinge mechanism with two plates and a revolute joint</li>
+        <li>Ran a motion study to animate the hinge opening and closing</li>
+      </ul>
+    </div>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <img src="cd5.png" alt="Day 5 Output" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+          <span>Output Image</span>
+        </div>
+        <div class="img-label">Hinge Assembly</div>
+      </div>
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <img src="cds5.jpg" alt="Day 5 Session" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+          <span>Session Photo</span>
+        </div>
+        <div class="img-label">Session</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 6 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 06</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>Engineering Practice</h2>
+    <p class="day-subtitle">Applying knowledge to create real engineering parts — practicing industry-relevant components and learning inspection and measurement tools.</p>
+    <ul class="day-points">
+      <li>Designed a simple <strong>Spur Gear</strong> using a circular profile and tooth sketch pattern</li>
+      <li>Created a <strong>Plate with Holes</strong> — a common mechanical base part with multiple through-hole features</li>
+      <li>Used the <code>Measure</code> tool to check distances, edge lengths, surface areas, and angles</li>
+      <li>Explored the <code>Inspect</code> panel — used <code>Interference</code> analysis to check for overlapping parts</li>
+      <li>Applied <code>Hole</code> tool (instead of manual cut-extrude) for precise diameter and depth control</li>
+      <li>Used <code>Thread</code> tool to add cosmetic or modeled threading to holes and shafts</li>
+      <li>Designed a simple <strong>laser-cut plate</strong> profile — flat geometry optimized for 2D cutting</li>
+    </ul>
+    <div class="practice-box">
+      <h4>👉 Practice</h4>
+      <ul>
+        <li>Designed a laser-cut plate with mounting holes and cutout features</li>
+        <li>Used the Measure and Inspect tools to verify part dimensions</li>
+      </ul>
+    </div>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <img src="cd6.png" alt="Day 6 Output" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+          <span>Output Image</span>
+        </div>
+        <div class="img-label">Output</div>
+      </div>
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <img src="cds6.jpg" alt="Day 6 Session" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+          <span>Session Photo</span>
+        </div>
+        <div class="img-label">Session</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 7 -->
+  <div class="day" style="border-color: rgba(0,255,179,0.2); box-shadow: 0 0 40px rgba(0,255,179,0.06);">
+    <div class="day-header">
+      <span class="day-number">Day 07</span>
+      <div class="day-line"></div>
+      <span class="badge badge-active" style="font-size:11px; flex-shrink:0;">✦ Final Project</span>
+    </div>
+    <h2>Final Project</h2>
+    <p class="day-subtitle">The culmination of all 7 days — combining sketching, 3D modeling, assembly and engineering principles into one complete, polished project.</p>
+    <ul class="day-points">
+      <li>Chose a project idea and planned the design in sketches before modeling</li>
+      <li>Applied all learned tools — Extrude, Revolve, Fillet, Chamfer, Hole, and Pattern</li>
+      <li>Created a multi-component assembly with proper joints and motion</li>
+      <li>Used the <code>Render</code> workspace to create a photorealistic render of the final model</li>
+      <li>Exported the model as an <code>STL</code> file (ready for 3D printing) and <code>DXF</code> file (ready for laser cutting)</li>
+      <li>Prepared a clean, annotated drawing using the <code>Drawing</code> workspace with dimensions</li>
+    </ul>
+    <div class="practice-box">
+      <h4>🎯 Project Options</h4>
+      <ul>
+        <li>Phone stand — assembly with adjustable angle component</li>
+        <li>Power button assembly — sliding mechanism with housing</li>
+        <li>Simple clamp — screw-driven clamping mechanism</li>
+        <li>Key holder (laser cutting) — flat plate with slots and cutouts</li>
+      </ul>
+    </div>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <img src="cd7.png" alt="Day 7 Output" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+          <span>Final Project Output</span>
+        </div>
+        <div class="img-label">Final Output</div>
+      </div>
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <img src="cds7.jpg" alt="Day 7 Session" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+          <span>Session Photo</span>
+        </div>
+        <div class="img-label">Session</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2026 <span>Neha Rajput</span> · Digital FABLAB Portfolio · SSGMCE Shegaon</p>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.day').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
