@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UI/UX Design Module | Neha Rajput</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --cyan: #00d4ff;
+    --violet: #7c3aed;
+    --violet-light: #a855f7;
+    --bg: #05080f;
+    --bg2: #0a0f1e;
+    --card: rgba(255,255,255,0.04);
+    --card-border: rgba(255,255,255,0.08);
+    --text: #e8ecf4;
+    --muted: #8892aa;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.5;
+  }
+
+  .site-header {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    padding: 18px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+    background: rgba(5,8,15,0.6);
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .logo-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    background: linear-gradient(90deg, var(--cyan), var(--violet-light));
+    -webkit-background-clip: text;
+    color: transparent;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-back {
+    padding: 10px 22px;
+    border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--card-border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-back:hover {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    background: rgba(0,212,255,0.06);
+  }
+
+  .page-hero {
+    position: relative;
+    padding: 160px 10% 90px;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.3;
+    animation: float 8s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+  .blob-1 { width: 400px; height: 400px; background: radial-gradient(circle, #7c3aed, transparent 70%); top: -80px; left: -80px; }
+  .blob-2 { width: 350px; height: 350px; background: radial-gradient(circle, #00d4ff, transparent 70%); bottom: -60px; right: -60px; animation-delay: -4s; }
+  @keyframes float {
+    from { transform: translate(0,0) scale(1); }
+    to   { transform: translate(30px,20px) scale(1.06); }
+  }
+
+  .page-hero-content { position: relative; z-index: 1; }
+
+  .hero-label {
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .page-hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(40px, 7vw, 80px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    background: linear-gradient(135deg, #fff 30%, var(--cyan) 60%, var(--violet-light) 100%);
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .page-hero > .page-hero-content > p {
+    margin-top: 16px;
+    font-size: 16px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  .badge-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--card-border);
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  .badge-active {
+    background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(124,58,237,0.15));
+    border-color: rgba(0,212,255,0.4);
+    color: var(--cyan);
+  }
+
+  .section-divider {
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--cyan), var(--violet));
+    border-radius: 3px;
+    margin: 0 auto;
+  }
+
+  .container {
+    padding: 60px 10% 100px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .day {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+    padding: 40px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .day.visible { opacity: 1; transform: translateY(0); }
+
+  .day::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  }
+
+  .day:hover {
+    border-color: rgba(0,212,255,0.25);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4), 0 0 30px rgba(0,212,255,0.06);
+  }
+
+  .day-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .day-number {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 100px;
+    background: linear-gradient(135deg, var(--cyan), var(--violet));
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .day-line { flex: 1; height: 1px; background: var(--card-border); }
+
+  .day h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #fff, var(--violet-light));
+    -webkit-background-clip: text;
+    color: transparent;
+    margin-bottom: 6px;
+  }
+
+  .day-subtitle {
+    font-size: 13px;
+    color: var(--cyan);
+    letter-spacing: 0.3px;
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .day-points {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 28px;
+    border-left: 2px solid rgba(0,212,255,0.3);
+    padding-left: 16px;
+  }
+
+  .day-points li {
+    color: #b0bcd4;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .day-points li code {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    background: rgba(0,212,255,0.08);
+    color: var(--cyan);
+    padding: 1px 6px;
+    border-radius: 4px;
+    border: 1px solid rgba(0,212,255,0.15);
+  }
+
+  .img-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+
+  .img-wrap {
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--card-border);
+    background: var(--bg2);
+    position: relative;
+    aspect-ratio: 4/3;
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .img-wrap:hover {
+    transform: scale(1.02);
+    border-color: rgba(0,212,255,0.3);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  }
+
+  .img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .img-label {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 8px 12px;
+    background: linear-gradient(to top, rgba(5,8,15,0.9), transparent);
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .project-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    padding: 10px 22px;
+    background: linear-gradient(135deg, rgba(0,212,255,0.12), rgba(124,58,237,0.12));
+    border: 1px solid rgba(0,212,255,0.35);
+    border-radius: 100px;
+    color: var(--cyan);
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s;
+    letter-spacing: 0.3px;
+  }
+  .project-link:hover {
+    background: linear-gradient(135deg, rgba(0,212,255,0.2), rgba(124,58,237,0.2));
+    box-shadow: 0 0 20px rgba(0,212,255,0.2);
+    transform: translateY(-2px);
+  }
+
+  footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--card-border);
+    padding: 40px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  footer span {
+    background: linear-gradient(90deg, var(--cyan), var(--violet-light));
+    -webkit-background-clip: text;
+    color: transparent;
+    font-weight: 600;
+  }
+
+  @media (max-width: 768px) {
+    .site-header { padding: 16px 24px; }
+    .page-hero { padding: 130px 6% 70px; }
+    .container { padding: 40px 6% 80px; }
+    .day { padding: 28px 24px; }
+    .img-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <span class="logo-text">FABLAB × NEHA</span>
+  <a href="index.html" class="btn-back">← Back to Portfolio</a>
+</header>
+
+<section class="page-hero">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="page-hero-content">
+    <p class="hero-label">FabLab Module</p>
+    <h1>UI / UX Design</h1>
+    <p>Designing intuitive, beautiful interfaces with Figma — from wireframes to polished prototypes.</p>
+    <div class="badge-row">
+      <span class="badge badge-active">✦ Completed</span>
+      <span class="badge">🎨 Figma</span>
+      <span class="badge">✦ Prototyping</span>
+      <span class="badge">📐 UX Research</span>
+      <span class="badge">7 Days</span>
+    </div>
+  </div>
+</section>
+
+<div style="padding: 0 10%; max-width:1200px; margin:0 auto;">
+  <div class="section-divider"></div>
+</div>
+
+<div class="container">
+
+  <!-- DAY 1 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 01</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>Installation &amp; Introduction to Figma</h2>
+    <p class="day-subtitle">Getting started with the industry-standard design tool — setting up the workspace and understanding core UI/UX concepts.</p>
+    <ul class="day-points">
+      <li>Installed Figma desktop app &amp; created an account</li>
+      <li>Understood the difference between <code>UI</code> (User Interface) and <code>UX</code> (User Experience)</li>
+      <li>Explored the Figma interface — toolbar, layers panel, properties panel</li>
+      <li>Learned about <code>Pages</code>, <code>Frames</code>, and <code>Canvas</code> in Figma</li>
+      <li>Introduction to design thinking: empathize, define, ideate, prototype, test</li>
+      <li>Explored real-world UI examples to understand good vs poor design</li>
+    </ul>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <img src="uiux1.png" alt="Day 1 Output" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+        <div class="img-label">Output</div>
+      </div>
+      <div class="img-wrap">
+        <img src="uiuxday1.jpeg" alt="Day 1 Session" onerror="this.parentElement.style.background='rgba(124,58,237,0.05)'">
+        <div class="img-label">Session</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 2 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 02</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>Frames, Colors &amp; Typography</h2>
+    <p class="day-subtitle">Building the visual foundation — creating frames for different devices and applying colors and text to bring layouts to life.</p>
+    <ul class="day-points">
+      <li>Created <code>Frames</code> for desktop, tablet &amp; mobile screen sizes</li>
+      <li>Used the <code>Rectangle</code>, <code>Ellipse</code>, and <code>Polygon</code> shape tools</li>
+      <li>Applied <code>Fill</code> colors — solid, linear gradient, radial gradient</li>
+      <li>Added <code>Text</code> layers and explored font families, sizes &amp; weights</li>
+      <li>Understood <code>Stroke</code>, <code>Corner Radius</code>, and <code>Opacity</code> settings</li>
+      <li>Practiced grouping elements and naming layers for clean file organization</li>
+      <li>Explored the <code>Color Styles</code> feature to create a consistent color palette</li>
+    </ul>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <img src="uiux2.png" alt="Day 2 Output" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+        <div class="img-label">Output</div>
+      </div>
+      <div class="img-wrap">
+        <img src="uiuxday2.jpeg" alt="Day 2 Session" onerror="this.parentElement.style.background='rgba(124,58,237,0.05)'">
+        <div class="img-label">Session</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 3 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 03</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>Red Bull UI — Layout &amp; Glass Morphism</h2>
+    <p class="day-subtitle">Starting the Red Bull UI project — building the hero layout and mastering the glass morphism effect for a premium, modern aesthetic.</p>
+    <ul class="day-points">
+      <li>Started the <strong>Red Bull UI Design</strong> project from scratch in Figma</li>
+      <li>Set up a dark-themed frame with brand colors (Red Bull red, black, silver)</li>
+      <li>Placed &amp; positioned brand imagery using <code>Image Fill</code> on shapes</li>
+      <li>Used <code>Auto Layout</code> to structure the navigation bar responsively</li>
+      <li>Created <strong>glass morphism</strong> cards — semi-transparent frames with <code>Fill Opacity</code> set to 10–20%</li>
+      <li>Applied <code>Background Blur</code> effect to achieve the frosted glass look</li>
+      <li>Added <code>Stroke</code> with low opacity white border to complete the glassmorphism style</li>
+      <li>Layered elements with shadows using <code>Drop Shadow</code> &amp; <code>Inner Shadow</code></li>
+    </ul>
+    <a href="https://www.figma.com/design/BydslhmYlhBGmtyEsvW0P8/Untitled?node-id=46-39&t=SAqVJlhVgkbxXZkF-1" target="_blank" class="project-link">
+      🔗 View Day 3–4 Design on Figma
+    </a>
+    <div class="img-grid" style="margin-top: 20px;">
+      <div class="img-wrap">
+        <img src="uiux3.png" alt="Day 3 Output" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+        <div class="img-label">Output</div>
+      </div>
+      <div class="img-wrap">
+        <img src="uiuxday3.jpeg" alt="Day 3 Session" onerror="this.parentElement.style.background='rgba(124,58,237,0.05)'">
+        <div class="img-label">Session</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 4 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 04</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>Red Bull UI — Components &amp; Refinement</h2>
+    <p class="day-subtitle">Continuing the Red Bull project — building reusable components, refining the layout and polishing every design detail.</p>
+    <ul class="day-points">
+      <li>Created reusable <code>Components</code> for buttons, cards &amp; the nav bar</li>
+      <li>Used <code>Variants</code> to create hover and active states for buttons</li>
+      <li>Designed a product showcase section with overlapping image layers</li>
+      <li>Used <code>Clip Content</code> on frames to mask overflowing images cleanly</li>
+      <li>Refined the glass morphism cards with better contrast &amp; readability</li>
+      <li>Explored <code>Effects</code> panel — blur, drop shadow &amp; layer blending modes</li>
+      <li>Linked multiple frames together to form a complete screen flow</li>
+    </ul>
+    <a href="https://www.figma.com/design/BydslhmYlhBGmtyEsvW0P8/Untitled?node-id=46-39&t=SAqVJlhVgkbxXZkF-1" target="_blank" class="project-link">
+      🔗 View Day 3–4 Design on Figma
+    </a>
+    <div class="img-grid" style="margin-top: 20px;">
+      <div class="img-wrap">
+        <img src="uiux4.png" alt="Day 4 Output" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+        <div class="img-label">Output</div>
+      </div>
+      <div class="img-wrap">
+        <img src="uiuxday4.jpeg" alt="Day 4 Session" onerror="this.parentElement.style.background='rgba(124,58,237,0.05)'">
+        <div class="img-label">Session</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 5 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 05</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>Prototyping &amp; Animations</h2>
+    <p class="day-subtitle">Making the design interactive — linking screens and applying Figma's animation settings to create realistic, smooth transitions.</p>
+    <ul class="day-points">
+      <li>Switched to <code>Prototype</code> mode and connected frames with interaction arrows</li>
+      <li>Set triggers: <code>On Click</code>, <code>On Hover</code>, <code>Mouse Enter</code>, <code>Mouse Leave</code></li>
+      <li>Chose animation types: <code>Instant</code>, <code>Dissolve</code>, <code>Smart Animate</code>, <code>Move In / Move Out</code>, <code>Push</code>, <code>Slide In / Slide Out</code></li>
+      <li>Configured <code>Easing</code> curves — <code>Ease In</code>, <code>Ease Out</code>, <code>Ease In &amp; Out</code>, <code>Linear</code>, <code>Spring</code></li>
+      <li>Set animation <code>Duration</code> (in milliseconds) for each transition</li>
+      <li>Used <code>Smart Animate</code> to auto-animate shared layers between frames</li>
+      <li>Applied <code>Scroll Behaviour</code> — fixed position for navbar during scroll prototype</li>
+      <li>Previewed the full prototype flow using Figma's built-in <code>Presentation Mode</code></li>
+    </ul>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <img src="uiux5.png" alt="Day 5 Output" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+        <div class="img-label">Output</div>
+      </div>
+      <div class="img-wrap">
+        <img src="uiuxday5.jpeg" alt="Day 5 Session" onerror="this.parentElement.style.background='rgba(124,58,237,0.05)'">
+        <div class="img-label">Session</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 6 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 06</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>UX Fundamentals &amp; Case Studies</h2>
+    <p class="day-subtitle">Going beyond visuals — learning the science of user behaviour, usability principles, and analysing real-world UX through case studies.</p>
+    <ul class="day-points">
+      <li>Studied core UX principles: <code>Usability</code>, <code>Accessibility</code>, <code>Consistency</code>, <code>Feedback</code></li>
+      <li>Understood the patterns and flow of how users read screens</li>
+      <li>Analysed UX case studies — Linkedin, Go Daddy &amp; popular e-commerce apps</li>
+      <li>Discussed common UX mistakes: poor contrast, hidden CTAs, cluttered layouts</li>
+      <li>Introduced to <code>User Personas</code> and <code>User Journey Mapping</code></li>
+    </ul>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <img src="uiux6.png" alt="Day 6 Output" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+        <div class="img-label">Output</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 7 -->
+  <div class="day" style="border-color: rgba(0,212,255,0.2); box-shadow: 0 0 40px rgba(0,212,255,0.06);">
+    <div class="day-header">
+      <span class="day-number">Day 07</span>
+      <div class="day-line"></div>
+      <span class="badge badge-active" style="font-size:11px; flex-shrink:0;">✦ Final Project</span>
+    </div>
+    <h2>Final Project — Complete UI/UX Design</h2>
+    <p class="day-subtitle">The culmination of the entire module — designing a complete, polished UI with a working prototype, ready to be handed off to a developer.</p>
+    <ul class="day-points">
+      <li>Designed a complete multi-screen UI project from concept to prototype</li>
+      <li>Applied all module learnings — layouts, components, glass morphism &amp; animations</li>
+      <li>Built a consistent design system with <code>Color Styles</code> &amp; <code>Text Styles</code></li>
+      <li>Created a fully linked interactive prototype with smooth transitions</li>
+      <li>Conducted a self-review using UX heuristics to refine the design</li>
+      <li>Exported assets and prepared the file for developer handoff</li>
+      <li>Shared the final Figma project link for review &amp; feedback</li>
+    </ul>
+    <a href="https://www.figma.com/design/BydslhmYlhBGmtyEsvW0P8/Untitled?node-id=115-100&t=SAqVJlhVgkbxXZkF-1" target="_blank" class="project-link">
+      🔗 View Final Project on Figma
+    </a>
+    <div class="img-grid" style="margin-top: 20px;">
+      <div class="img-wrap">
+        <img src="uiux7.png" alt="Day 7 Output" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+        <div class="img-label">Output</div>
+      </div>
+      
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2026 <span>Neha Rajput</span> · Digital FABLAB Portfolio · SSGMCE Shegaon</p>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.day').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
