@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laser Cutting Module | Neha Rajput</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --red: #ff2d55;
+    --red-light: #ff6b8a;
+    --yellow: #ffd60a;
+    --bg: #05080f;
+    --bg2: #0a0f1e;
+    --card: rgba(255,255,255,0.04);
+    --card-border: rgba(255,255,255,0.08);
+    --text: #e8ecf4;
+    --muted: #8892aa;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.5;
+  }
+
+  .site-header {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    padding: 18px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+    background: rgba(5,8,15,0.6);
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .logo-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    background: linear-gradient(90deg, var(--red), var(--yellow));
+    -webkit-background-clip: text;
+    color: transparent;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-back {
+    padding: 10px 22px;
+    border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--card-border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-back:hover {
+    border-color: var(--red);
+    color: var(--red);
+    background: rgba(255,45,85,0.06);
+  }
+
+  .page-hero {
+    position: relative;
+    padding: 160px 10% 90px;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.3;
+    animation: float 8s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+  .blob-1 { width: 400px; height: 400px; background: radial-gradient(circle, #ff2d55, transparent 70%); top: -80px; left: -80px; }
+  .blob-2 { width: 350px; height: 350px; background: radial-gradient(circle, #ffd60a, transparent 70%); bottom: -60px; right: -60px; animation-delay: -4s; }
+  @keyframes float {
+    from { transform: translate(0,0) scale(1); }
+    to   { transform: translate(30px,20px) scale(1.06); }
+  }
+
+  .page-hero-content { position: relative; z-index: 1; }
+
+  .hero-label {
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .page-hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(40px, 7vw, 80px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    background: linear-gradient(135deg, #fff 30%, var(--red) 60%, var(--yellow) 100%);
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .page-hero > .page-hero-content > p {
+    margin-top: 16px;
+    font-size: 16px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  .badge-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--card-border);
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  .badge-active {
+    background: linear-gradient(135deg, rgba(255,45,85,0.15), rgba(255,214,10,0.15));
+    border-color: rgba(255,45,85,0.4);
+    color: var(--red);
+  }
+
+  .container {
+    padding: 60px 10% 100px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .day {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+    padding: 40px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .day.visible { opacity: 1; transform: translateY(0); }
+
+  .day::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--red), transparent);
+  }
+
+  .day:hover {
+    border-color: rgba(255,45,85,0.2);
+    box-shadow: 0 8px 40px rgba(255,45,85,0.06);
+  }
+
+  .day-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .day-number {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--red);
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .day-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(255,45,85,0.3), transparent);
+  }
+
+  .day h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(20px, 3vw, 28px);
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+
+  .day-subtitle {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 24px;
+    max-width: 700px;
+  }
+
+  .day-points {
+    list-style: none;
+    margin-bottom: 28px;
+  }
+
+  .day-points li {
+    font-size: 14px;
+    color: var(--text);
+    padding: 8px 0 8px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    position: relative;
+    line-height: 1.6;
+  }
+
+  .day-points li::before {
+    content: '▹';
+    position: absolute;
+    left: 0;
+    color: var(--red);
+  }
+
+  code {
+    background: rgba(255,45,85,0.1);
+    color: var(--red-light);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: 'Courier New', monospace;
+    border: 1px solid rgba(255,45,85,0.2);
+  }
+
+  .img-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .img-wrap {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 16/10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s;
+  }
+
+  .img-wrap:hover img { transform: scale(1.04); }
+
+  .img-label {
+    position: absolute;
+    bottom: 10px; left: 10px;
+    background: rgba(5,8,15,0.8);
+    border: 1px solid var(--card-border);
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 100px;
+    text-transform: uppercase;
+  }
+
+  .img-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .img-placeholder svg { opacity: 0.3; }
+
+  .practice-box {
+    background: rgba(255,45,85,0.04);
+    border: 1px solid rgba(255,45,85,0.15);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-top: 20px;
+  }
+
+  .practice-box h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--red);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .practice-box ul { list-style: none; }
+
+  .practice-box ul li {
+    font-size: 14px;
+    color: var(--text);
+    padding: 6px 0 6px 20px;
+    position: relative;
+  }
+
+  .practice-box ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--red);
+    font-size: 12px;
+  }
+
+  footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--card-border);
+    padding: 40px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  footer span {
+    background: linear-gradient(90deg, var(--red), var(--yellow));
+    -webkit-background-clip: text;
+    color: transparent;
+    font-weight: 600;
+  }
+
+  @media (max-width: 768px) {
+    .site-header { padding: 16px 24px; }
+    .page-hero { padding: 120px 6% 60px; }
+    .container { padding: 40px 6% 80px; }
+    .day { padding: 28px 24px; }
+    .img-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <span class="logo-text">FABLAB × NEHA</span>
+  <a href="index.html" class="btn-back">← Back to Portfolio</a>
+</header>
+
+<section class="page-hero">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="page-hero-content">
+    <p class="hero-label">Module 05 · CO₂ Laser Cutter</p>
+    <h1>Laser Cutting</h1>
+    <p>From vector design to precision-cut parts — mastering the laser cutter from machine basics to final project</p>
+    <div class="badge-row">
+      <span class="badge badge-active">✦ Completed</span>
+      <span class="badge">✂️ CO₂ Laser</span>
+      <span class="badge">6 Days</span>
+      <span class="badge">LightBurn · DXF · SVG</span>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+
+  <!-- DAY 1 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 01</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>Introduction to the Laser Cutter</h2>
+    <p class="day-subtitle">The first day focused on understanding the machine — what a CO₂ laser cutter is, how it works physically, all of its components, and the critical safety rules that must always be followed.</p>
+    <ul class="day-points">
+      <li>Understood what a <strong>CO₂ Laser Cutter</strong> is — a machine that uses a focused beam of infrared laser light to cut or engrave materials with extreme precision</li>
+      <li>Learned how the <strong>laser beam is generated</strong> in the CO₂ tube and directed via mirrors to the focusing lens above the cutting head</li>
+      <li>Identified all machine components: <code>Laser Tube</code>, <code>Beam Path Mirrors</code>, <code>Focusing Lens</code>, <code>Cutting Head</code>, <code>Honeycomb Bed</code>, <code>Air Assist</code>, <code>Exhaust Fan</code>, and <code>Controller Board</code></li>
+      <li>Understood the difference between <strong>Cutting</strong> (full-power, slow pass) and <strong>Engraving</strong> (lower power, fast raster scan)</li>
+      <li>Learned about compatible materials: <code>Acrylic</code>, <code>Wood (MDF, Plywood)</code>, <code>Cardboard</code>, <code>Leather</code>, and materials that must <strong>never</strong> be cut (PVC, polycarbonate — they produce toxic fumes)</li>
+      <li>Studied all <strong>safety rules</strong>: never leave the machine unattended, ensure exhaust ventilation is running, keep fire suppression nearby, never bypass the lid interlock</li>
+      <li>Understood the role of <code>Air Assist</code> — a constant stream of air blown at the cut point to reduce burning and keep the lens clean</li>
+    </ul>
+    <div class="practice-box">
+      <h4>🔍 What We Learned</h4>
+      <ul>
+        <li>Identified all physical components of the CO₂ laser cutter by name and function</li>
+        <li>Learned the critical safety rules before ever operating the machine</li>
+        <li>Understood the difference between cutting and engraving modes</li>
+      </ul>
+    </div>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <img src="2d1.jpg" alt="Day 1 Session" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+          <span>Machine Photo</span>
+        </div>
+        <div class="img-label">Machine</div>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- DAY 2 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 02</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>Machine Operation &amp; Settings</h2>
+    <p class="day-subtitle">Learning to operate the laser cutter — setting up the material, focusing the beam, and understanding power and speed settings that determine the quality of every cut.</p>
+    <ul class="day-points">
+      <li>Learned how to <strong>set the focal length</strong> — adjusting the cutting head height using a focus tool so the laser beam converges precisely at the material surface</li>
+      <li>Placed material flat on the <code>honeycomb bed</code> and secured it to prevent movement during cutting</li>
+      <li>Used the machine's <code>Control Panel</code> to set the laser <strong>Origin</strong> (start position) and frame the job before cutting</li>
+      <li>Understood the two key settings: <code>Power (%)</code> — how intense the beam is, and <code>Speed (mm/s)</code> — how fast the head moves</li>
+      <li>Learned the relationship: <strong>high power + slow speed = deep cut</strong>, <strong>low power + fast speed = surface engrave</strong></li>
+      <li>Ran test cuts on scrap material to find the correct power/speed combination for the actual material thickness</li>
+      <li>Understood the <code>Z-height</code> offset adjustment for materials of different thicknesses</li>
+      <li>Ensured the <strong>exhaust system</strong> was running and the air assist was connected before any cuts</li>
+    </ul>
+    <div class="practice-box">
+      <h4>🔍 What We Learned</h4>
+      <ul>
+        <li>Learned all the operational steps — focusing, origin setting, framing, and running a job</li>
+        <li>Understood how power and speed settings affect cut depth and quality</li>
+        <li>Ran test cuts to find optimal settings for the project material</li>
+      </ul>
+    </div>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <img src="2d2.jpg" alt="Day 2 Session" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+          <span>Test Cuts</span>
+        </div>
+        <div class="img-label">Test Cuts</div>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- DAY 3 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 03</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>Design Software &amp; File Preparation</h2>
+    <p class="day-subtitle">Learning to prepare files for the laser cutter — understanding what file formats the machine accepts, how to use LightBurn software, and how to convert a CAD file into a laser-ready job.</p>
+    <ul class="day-points">
+      <li>Introduced to <strong>LightBurn</strong> — the primary software used to control the laser cutter and prepare cutting jobs</li>
+      <li>Understood that the laser cutter cuts along <strong>vector paths</strong> — so designs must be created as vector files, not raster images</li>
+      <li>Learned about accepted file formats: <code>DXF</code> (from Fusion 360 or AutoCAD), <code>SVG</code> (from Inkscape or Illustrator), and <code>AI</code></li>
+      <li>Opened a <code>DXF</code> file exported from Fusion 360 into LightBurn — understood the import process and how to check for open paths or duplicate lines</li>
+      <li>Assigned <strong>layers</strong> in LightBurn — each color represents a different operation (cut, engrave, score) with its own power/speed settings</li>
+      <li>Used the <code>Node Editor</code> in LightBurn to fix open paths that would cause incomplete cuts</li>
+      <li>Learned the difference between <code>Line</code> mode (vector cut/score) and <code>Fill</code> mode (raster engrave)</li>
+      <li>Set up the job layout — placed parts efficiently to minimize material waste using the <code>Arrange</code> tools</li>
+      <li>Previewed the job in LightBurn's <code>Preview</code> window to verify cut order and estimated job time</li>
+    </ul>
+    <div class="practice-box">
+      <h4>🔍 CAD → DXF → LightBurn Workflow</h4>
+      <ul>
+        <li>Exported a Fusion 360 sketch as a DXF file and imported it into LightBurn</li>
+        <li>Assigned cut layers with correct power and speed settings per operation</li>
+        <li>Previewed the job and verified the cut path before sending to the machine</li>
+      </ul>
+    </div>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <img src="2d3.jpg" alt="Day 3 Session" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+          <span>LightBurn Screenshot</span>
+        </div>
+        <div class="img-label">Software</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 4 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 04</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>First Cut — Project Day 1</h2>
+    <p class="day-subtitle">Putting everything together — running the first real cut on the project material and beginning the fabrication of the final project.</p>
+    <ul class="day-points">
+      <li>Placed the chosen project material (MDF / acrylic sheet) on the honeycomb bed and set focus</li>
+      <li>Sent the prepared LightBurn job to the machine and ran the <code>Frame</code> preview to confirm positioning</li>
+      <li>Started the cut job and monitored the process — watched for flame flare-ups or stalling</li>
+      <li>After cutting, carefully removed parts from the bed and cleaned up the kerf edges</li>
+      <li>Checked part dimensions with calipers against the original design dimensions</li>
+      <li>Identified any cut quality issues — <code>charring</code>, <code>incomplete cuts</code>, or <code>melted edges</code> — and noted adjustments for the next run</li>
+    </ul>
+    <div class="practice-box">
+      <h4>✂️ Project Work — Day 1</h4>
+      <ul>
+        <li>Successfully ran the first laser cut of the project parts</li>
+        <li>Verified cut quality and dimensions against the original design</li>
+        <li>Noted settings improvements for the next cut session</li>
+      </ul>
+    </div>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <img src="2d4.jpg" alt="Day 4 Session" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+          <span>Cut in Progress</span>
+        </div>
+        <div class="img-label">Cutting</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 5 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 05</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>Project Continues — Engraving &amp; Refinement</h2>
+    <p class="day-subtitle">Expanding the project — adding engraved elements, cutting additional components, and refining the fit and finish of all cut parts.</p>
+    <ul class="day-points">
+      <li>Added <strong>engraving</strong> to project parts — logo, text, or decorative patterns using LightBurn's Fill mode</li>
+      <li>Cut remaining project components on fresh material sheets</li>
+      <li>Post-processed cut parts — cleaned charred edges with fine-grit sandpaper or a damp cloth</li>
+      <li>Dry-assembled all parts together to verify fit — checked slot widths, tab thicknesses, and joint clearances</li>
+      <li>Understood the importance of accounting for <strong>kerf width</strong> — the material removed by the laser beam — when designing tight-fitting joints</li>
+      <li>Made small CAD adjustments to improve the fit of one component that was slightly too tight</li>
+    </ul>
+    <div class="practice-box">
+      <h4>✂️ Project Work — Day 2</h4>
+      <ul>
+        <li>Added engraved details to project parts using LightBurn's Fill mode</li>
+        <li>Cut all remaining components and cleaned up edges</li>
+        <li>Dry-assembled the full project and verified all joints fit correctly</li>
+      </ul>
+    </div>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <img src="2d5.jpg" alt="Day 5 Session" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+          <span>Engraved Parts</span>
+        </div>
+        <div class="img-label">Engraving</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 6 -->
+  <div class="day" style="border-color: rgba(255,45,85,0.2); box-shadow: 0 0 40px rgba(255,45,85,0.06);">
+    <div class="day-header">
+      <span class="day-number">Day 06</span>
+      <div class="day-line"></div>
+      <span class="badge badge-active" style="font-size:11px; flex-shrink:0;">✦ Final Project</span>
+    </div>
+    <h2>Final Assembly &amp; Presentation</h2>
+    <p class="day-subtitle">The culmination of the laser cutting module — assembling all cut and engraved parts into the final project and presenting the completed work.</p>
+    <ul class="day-points">
+      <li>Completed all final cuts and engraving passes</li>
+      <li>Assembled the complete project — glued, slotted, or press-fit all components together</li>
+      <li>Applied any final finishing touches — paint, acrylic polish, or protective coating</li>
+      <li>Photographed the completed project for portfolio documentation</li>
+      <li>Presented the project — explained the design, material choices, settings used, and challenges overcome</li>
+      <li>Reflected on the complete workflow: <strong>CAD Design → DXF Export → LightBurn Setup → Laser Cut → Assemble</strong></li>
+    </ul>
+    <div class="practice-box">
+      <h4>🎯 Final Project Output</h4>
+      <ul>
+        <li>Fully assembled laser-cut project with engraved details</li>
+        <li>Complete workflow documented: Design → Export → Slice → Cut → Assemble</li>
+        <li>Presented finished project to the FabLab team</li>
+      </ul>
+    </div>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <img src="2d7.jpg" alt="Day 6 Session" onerror="this.parentElement.style.background='rgba(0,212,255,0.05)'">
+          <span>Final Project</span>
+        </div>
+        <div class="img-label">Final Output</div>
+      </div>
+      
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2026 <span>Neha Rajput</span> · Digital FABLAB Portfolio · SSGMCE Shegaon</p>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.day').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
