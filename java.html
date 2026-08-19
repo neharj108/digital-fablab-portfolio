@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java Programming Module | Neha Rajput</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --orange: #ff6b35;
+    --orange-light: #ff9a6c;
+    --cyan: #00d4ff;
+    --bg: #05080f;
+    --bg2: #0a0f1e;
+    --card: rgba(255,255,255,0.04);
+    --card-border: rgba(255,255,255,0.08);
+    --text: #e8ecf4;
+    --muted: #8892aa;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.5;
+  }
+
+  .site-header {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    padding: 18px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+    background: rgba(5,8,15,0.6);
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .logo-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    background: linear-gradient(90deg, var(--orange), var(--orange-light));
+    -webkit-background-clip: text;
+    color: transparent;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-back {
+    padding: 10px 22px;
+    border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--card-border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-back:hover {
+    border-color: var(--orange);
+    color: var(--orange);
+    background: rgba(255,107,53,0.06);
+  }
+
+  .page-hero {
+    position: relative;
+    padding: 160px 10% 90px;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.3;
+    animation: float 8s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+  .blob-1 { width: 400px; height: 400px; background: radial-gradient(circle, #ff6b35, transparent 70%); top: -80px; left: -80px; }
+  .blob-2 { width: 350px; height: 350px; background: radial-gradient(circle, #ff9a6c, transparent 70%); bottom: -60px; right: -60px; animation-delay: -4s; }
+  @keyframes float {
+    from { transform: translate(0,0) scale(1); }
+    to   { transform: translate(30px,20px) scale(1.06); }
+  }
+
+  .page-hero-content { position: relative; z-index: 1; }
+
+  .hero-label {
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .page-hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(40px, 7vw, 80px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    background: linear-gradient(135deg, #fff 30%, var(--orange) 60%, var(--orange-light) 100%);
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .page-hero > .page-hero-content > p {
+    margin-top: 16px;
+    font-size: 16px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  .badge-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--card-border);
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  .badge-active {
+    background: linear-gradient(135deg, rgba(255,107,53,0.15), rgba(255,154,108,0.15));
+    border-color: rgba(255,107,53,0.4);
+    color: var(--orange);
+  }
+
+  .container {
+    padding: 60px 10% 100px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .day {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+    padding: 40px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .day.visible { opacity: 1; transform: translateY(0); }
+
+  .day::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--orange), transparent);
+  }
+
+  .day:hover {
+    border-color: rgba(255,107,53,0.2);
+    box-shadow: 0 8px 40px rgba(255,107,53,0.06);
+  }
+
+  .day-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .day-number {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--orange);
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .day-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(255,107,53,0.3), transparent);
+  }
+
+  .day h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(20px, 3vw, 28px);
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+
+  .day-subtitle {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 24px;
+    max-width: 700px;
+  }
+
+  .day-points {
+    list-style: none;
+    margin-bottom: 28px;
+  }
+
+  .day-points li {
+    font-size: 14px;
+    color: var(--text);
+    padding: 8px 0 8px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    position: relative;
+    line-height: 1.6;
+  }
+
+  .day-points li::before {
+    content: '▹';
+    position: absolute;
+    left: 0;
+    color: var(--orange);
+  }
+
+  code {
+    background: rgba(255,107,53,0.1);
+    color: var(--orange);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: 'Courier New', monospace;
+    border: 1px solid rgba(255,107,53,0.2);
+  }
+
+  /* ---- full code block (Java snippets) ---- */
+  .code-card {
+    background: #05070c;
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+
+  .code-card-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 18px;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .code-card-bar span.dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+  }
+  .code-card-bar span.dot:nth-child(1) { background: #ff6b6b; }
+  .code-card-bar span.dot:nth-child(2) { background: var(--orange-light); }
+  .code-card-bar span.dot:nth-child(3) { background: #6bd67b; }
+
+  .code-card-bar .filename {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    margin-left: 6px;
+    letter-spacing: 0.5px;
+  }
+
+  .code-card pre {
+    margin: 0;
+    padding: 20px 22px;
+    overflow-x: auto;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #dbe2f0;
+  }
+
+  .code-card .cm { color: #6b7a94; }              /* comments */
+  .code-card .kw { color: var(--orange); }         /* keywords */
+  .code-card .tp { color: var(--cyan); }           /* types/classes */
+  .code-card .st { color: #9be29b; }               /* strings */
+
+  .img-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .img-wrap {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 16/10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s;
+  }
+
+  .img-wrap:hover img { transform: scale(1.04); }
+
+  .img-label {
+    position: absolute;
+    bottom: 10px; left: 10px;
+    background: rgba(5,8,15,0.8);
+    border: 1px solid var(--card-border);
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 100px;
+    text-transform: uppercase;
+  }
+
+  .img-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .img-placeholder svg { opacity: 0.3; }
+
+  .practice-box {
+    background: rgba(255,107,53,0.04);
+    border: 1px solid rgba(255,107,53,0.15);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-top: 20px;
+  }
+
+  .practice-box h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--orange);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .practice-box ul { list-style: none; }
+
+  .practice-box ul li {
+    font-size: 14px;
+    color: var(--text);
+    padding: 6px 0 6px 20px;
+    position: relative;
+  }
+
+  .practice-box ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--orange);
+    font-size: 12px;
+  }
+
+  footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--card-border);
+    padding: 40px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  footer span {
+    background: linear-gradient(90deg, var(--orange), var(--orange-light));
+    -webkit-background-clip: text;
+    color: transparent;
+    font-weight: 600;
+  }
+
+  @media (max-width: 768px) {
+    .site-header { padding: 16px 24px; }
+    .page-hero { padding: 120px 6% 60px; }
+    .container { padding: 40px 6% 80px; }
+    .day { padding: 28px 24px; }
+    .img-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <span class="logo-text">FABLAB × NEHA</span>
+  <a href="index.html" class="btn-back">← Back to Portfolio</a>
+</header>
+
+<section class="page-hero">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="page-hero-content">
+    <p class="hero-label">Module 08 · Console Programming</p>
+    <h1>Java Programming</h1>
+    <p>From a blank terminal to a working console project — installing the JDK, learning the language core, and shipping a real program</p>
+    <div class="badge-row">
+      <span class="badge badge-active">✦ Completed</span>
+      <span class="badge">☕ Core Java</span>
+      <span class="badge">7 Days</span>
+      <span class="badge">JDK · VS Code · OOP</span>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+
+  <!-- DAY 1 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 01</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>Basics &amp; Installation</h2>
+    <p class="day-subtitle">The first day was about getting the environment ready and understanding what actually happens when a Java program runs, before writing any real logic.</p>
+    <ul class="day-points">
+      <li>Installed the <strong>JDK (Java Development Kit)</strong> and configured <code>JAVA_HOME</code> and the system <code>PATH</code></li>
+      <li>Learned the difference between <code>JDK</code>, <code>JRE</code>, and <code>JVM</code> — and why Java code is "compile once, run anywhere"</li>
+      <li>Set up <strong>VS Code</strong> with the Java Extension Pack and tried the <code>javac</code> + <code>java</code> command-line workflow</li>
+      <li>Understood the structure of a Java class — package, class declaration, and the <code>main()</code> method as the program's entry point</li>
+      <li>Wrote and ran the first Java program, compiling with <code>javac</code> and running it with <code>java</code></li>
+    </ul>
+    <div class="code-card">
+      <div class="code-card-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="filename">Day1_Basics.java</span>
+      </div>
+      <pre><span class="kw">public class</span> <span class="tp">Day1Basics</span> {
+    <span class="kw">public static void</span> main(<span class="tp">String</span>[] args) {
+        <span class="cm">// my very first Java program</span>
+        <span class="tp">System</span>.out.println(<span class="st">"Hello, Java! Day 1 complete."</span>);
+    }
+}</pre>
+    </div>
+    <div class="practice-box">
+      <h4>🔍 What We Learned</h4>
+      <ul>
+        <li>Set up a complete local Java development environment from scratch</li>
+        <li>Understood how source code becomes bytecode and then runs on the JVM</li>
+        <li>Compiled and executed a program entirely from the command line</li>
+      </ul>
+    </div>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <img class="real-img" data-name="day1-1" alt="Setup Photo" style="display:none;">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>Setup Photo</span>
+        </div>
+        <div class="img-label">Setup</div>
+      </div>
+      <div class="img-wrap">
+        <img class="real-img" data-name="day1-2" alt="Session Photo" style="display:none;">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>Session Photo</span>
+        </div>
+        <div class="img-label">Session</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 2 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 02</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>Variables &amp; Operators</h2>
+    <p class="day-subtitle">With the environment ready, day two moved into the actual building blocks of the language — storing data and doing something with it.</p>
+    <ul class="day-points">
+      <li>Learned primitive data types: <code>int</code>, <code>double</code>, <code>char</code>, <code>boolean</code>, <code>long</code>, <code>float</code></li>
+      <li>Practiced variable declaration, initialization, and Java naming conventions</li>
+      <li>Covered <strong>arithmetic, relational, logical, and assignment operators</strong></li>
+      <li>Explored <strong>type casting</strong> — implicit widening and explicit narrowing between types</li>
+      <li>Used <code>Scanner</code> to take input from the user at runtime</li>
+    </ul>
+    <div class="code-card">
+      <div class="code-card-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="filename">Day2_Variables.java</span>
+      </div>
+      <pre><span class="kw">import</span> java.util.Scanner;
+
+<span class="kw">public class</span> <span class="tp">Day2Variables</span> {
+    <span class="kw">public static void</span> main(<span class="tp">String</span>[] args) {
+        <span class="tp">Scanner</span> sc = <span class="kw">new</span> <span class="tp">Scanner</span>(<span class="tp">System</span>.in);
+        <span class="tp">int</span> a = 10, b = 4;
+        <span class="tp">double</span> avg = (a + b) / 2.0;
+
+        <span class="tp">System</span>.out.print(<span class="st">"Enter your name: "</span>);
+        <span class="tp">String</span> name = sc.nextLine();
+
+        <span class="tp">System</span>.out.println(name + <span class="st">", sum = "</span> + (a + b));
+        <span class="tp">System</span>.out.println(<span class="st">"Average = "</span> + avg);
+    }
+}</pre>
+    </div>
+    <div class="practice-box">
+      <h4>🔍 What We Learned</h4>
+      <ul>
+        <li>Understood how Java stores different kinds of data in memory</li>
+        <li>Practiced combining variables and operators to compute real results</li>
+        <li>Took user input for the first time and used it inside a program</li>
+      </ul>
+    </div>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <img class="real-img" data-name="day2-1" alt="Practice Photo" style="display:none;">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>Practice Photo</span>
+        </div>
+        <div class="img-label">Practice</div>
+      </div>
+      <div class="img-wrap">
+        <img class="real-img" data-name="day2-2" alt="Session Photo" style="display:none;">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>Session Photo</span>
+        </div>
+        <div class="img-label">Session</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 3 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 03</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>Statements &amp; Control Flow</h2>
+    <p class="day-subtitle">Day three introduced decision-making and repetition — giving programs the ability to react to conditions and repeat work automatically.</p>
+    <ul class="day-points">
+      <li>Learned conditional statements: <code>if</code>, <code>if-else</code>, and nested <code>if-else</code></li>
+      <li>Practiced looping statements: <code>for</code>, <code>while</code>, and <code>do-while</code></li>
+      <li>Used <code>break</code> and <code>continue</code> to control loop execution</li>
+      <li>Built small logic drills — number checks, pattern printing, and simple calculators</li>
+    </ul>
+    <div class="code-card">
+      <div class="code-card-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="filename">Day3_Statements.java</span>
+      </div>
+      <pre><span class="kw">public class</span> <span class="tp">Day3Statements</span> {
+    <span class="kw">public static void</span> main(<span class="tp">String</span>[] args) {
+        <span class="tp">int</span> n = 7;
+
+        <span class="kw">if</span> (n % 2 == 0) {
+            <span class="tp">System</span>.out.println(n + <span class="st">" is even"</span>);
+        } <span class="kw">else</span> {
+            <span class="tp">System</span>.out.println(n + <span class="st">" is odd"</span>);
+        }
+
+        <span class="cm">// print first 5 multiples using a for loop</span>
+        <span class="kw">for</span> (<span class="tp">int</span> i = 1; i &lt;= 5; i++) {
+            <span class="tp">System</span>.out.println(n + <span class="st">" x "</span> + i + <span class="st">" = "</span> + (n * i));
+        }
+    }
+}</pre>
+    </div>
+    <div class="practice-box">
+      <h4>🔍 What We Learned</h4>
+      <ul>
+        <li>Understood how to make a program branch based on conditions</li>
+        <li>Practiced writing loops to repeat logic without duplicating code</li>
+        <li>Combined conditionals and loops in small logic-building exercises</li>
+      </ul>
+    </div>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <img class="real-img" data-name="day3-1" alt="Logic Drills" style="display:none;">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>Logic Drills</span>
+        </div>
+        <div class="img-label">Practice</div>
+      </div>
+      <div class="img-wrap">
+        <img class="real-img" data-name="day3-2" alt="Session Photo" style="display:none;">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>Session Photo</span>
+        </div>
+        <div class="img-label">Session</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 4 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 04</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>Switch Cases</h2>
+    <p class="day-subtitle">Day four focused on a cleaner way to handle multiple fixed conditions, moving beyond long chains of if-else.</p>
+    <ul class="day-points">
+      <li>Learned <code>switch-case</code> as a cleaner alternative to long if-else chains</li>
+      <li>Practiced the traditional switch statement with <code>break</code></li>
+      <li>Explored the modern Java <strong>switch expression</strong> using arrow syntax and <code>yield</code></li>
+      <li>Handled <code>default</code> cases and grouped multiple labels together</li>
+    </ul>
+    <div class="code-card">
+      <div class="code-card-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="filename">Day4_SwitchCase.java</span>
+      </div>
+      <pre><span class="kw">public class</span> <span class="tp">Day4SwitchCase</span> {
+    <span class="kw">public static void</span> main(<span class="tp">String</span>[] args) {
+        <span class="tp">int</span> day = 3;
+        <span class="tp">String</span> dayName;
+
+        <span class="kw">switch</span> (day) {
+            <span class="kw">case</span> 1 -&gt; dayName = <span class="st">"Monday"</span>;
+            <span class="kw">case</span> 2 -&gt; dayName = <span class="st">"Tuesday"</span>;
+            <span class="kw">case</span> 3 -&gt; dayName = <span class="st">"Wednesday"</span>;
+            <span class="kw">default</span> -&gt; dayName = <span class="st">"Unknown"</span>;
+        }
+
+        <span class="tp">System</span>.out.println(<span class="st">"Day "</span> + day + <span class="st">" is "</span> + dayName);
+    }
+}</pre>
+    </div>
+    <div class="practice-box">
+      <h4>🔍 What We Learned</h4>
+      <ul>
+        <li>Understood when switch-case is a better fit than if-else chains</li>
+        <li>Compared the traditional and modern switch expression syntax</li>
+        <li>Practiced handling default and grouped case labels correctly</li>
+      </ul>
+    </div>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <img class="real-img" data-name="day4-1" alt="Switch Practice" style="display:none;">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>Switch Practice</span>
+        </div>
+        <div class="img-label">Practice</div>
+      </div>
+      <div class="img-wrap">
+        <img class="real-img" data-name="day4-2" alt="Session Photo" style="display:none;">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>Session Photo</span>
+        </div>
+        <div class="img-label">Session</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 5 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 05</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>Deeper into Java</h2>
+    <p class="day-subtitle">Day five went beyond single-method programs — organizing data with arrays and organizing logic with methods and basic OOP.</p>
+    <ul class="day-points">
+      <li>Learned <strong>arrays</strong> (1D and 2D) and how to loop through them</li>
+      <li>Wrote custom <code>methods</code> — parameters, return types, and method overloading</li>
+      <li>Got an introduction to <strong>Object-Oriented Programming</strong>: classes, objects, and constructors</li>
+      <li>Touched on <strong>encapsulation</strong> using private fields with getters and setters</li>
+    </ul>
+    <div class="code-card">
+      <div class="code-card-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="filename">Day5_Methods.java</span>
+      </div>
+      <pre><span class="kw">public class</span> <span class="tp">Day5Methods</span> {
+
+    <span class="kw">static int</span> square(<span class="tp">int</span> x) {
+        <span class="kw">return</span> x * x;
+    }
+
+    <span class="kw">public static void</span> main(<span class="tp">String</span>[] args) {
+        <span class="tp">int</span>[] nums = {2, 4, 6, 8};
+
+        <span class="kw">for</span> (<span class="tp">int</span> n : nums) {
+            <span class="tp">System</span>.out.println(n + <span class="st">" squared = "</span> + square(n));
+        }
+    }
+}</pre>
+    </div>
+    <div class="practice-box">
+      <h4>🔍 What We Learned</h4>
+      <ul>
+        <li>Understood how arrays store and organize multiple related values</li>
+        <li>Practiced writing reusable methods instead of repeating logic</li>
+        <li>Got a first working sense of classes, objects, and encapsulation</li>
+      </ul>
+    </div>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <img class="real-img" data-name="day5-1" alt="Methods Practice" style="display:none;">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>Methods Practice</span>
+        </div>
+        <div class="img-label">Practice</div>
+      </div>
+      <div class="img-wrap">
+        <img class="real-img" data-name="day5-2" alt="Session Photo" style="display:none;">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>Session Photo</span>
+        </div>
+        <div class="img-label">Session</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 6 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 06</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>Project Planning — Student Grade Calculator</h2>
+    <p class="day-subtitle">Day six was dedicated to planning before coding — choosing a project that used everything learned so far and mapping it out on paper first.</p>
+    <ul class="day-points">
+      <li>Chose a project idea suited to console-based Java: a <strong>Student Grade Calculator</strong></li>
+      <li>Broke the project into modules — <code>Input</code>, <code>Processing</code>, and <code>Output/Display</code> logic</li>
+      <li>Sketched the class structure and the <code>main()</code> program flow before writing any code</li>
+      <li>Planned edge cases to handle — invalid marks, empty input, and division by zero</li>
+    </ul>
+    <div class="code-card">
+      <div class="code-card-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="filename">Day6_Plan.md</span>
+      </div>
+      <pre><span class="cm"># Project: Student Grade Calculator
+
+## Modules
+1. Input   -&gt; take subject marks from the user
+2. Process -&gt; calculate total, percentage, and grade
+3. Output  -&gt; display a clean result summary
+
+## Grade logic
+&gt;= 90 -&gt; A+   |  &gt;= 75 -&gt; A   |  &gt;= 60 -&gt; B
+&gt;= 40 -&gt; C    |  below  -&gt; Fail
+
+## Edge cases
+- marks entered above 100 or below 0
+- non-numeric input
+- zero subjects entered</span></pre>
+    </div>
+    <div class="practice-box">
+      <h4>🔍 What We Learned</h4>
+      <ul>
+        <li>Practiced breaking a real project into clear, buildable modules</li>
+        <li>Planned grade logic and edge cases before touching any code</li>
+        <li>Understood why planning the flow first makes coding day much faster</li>
+      </ul>
+    </div>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <img class="real-img" data-name="day6-1" alt="Planning Notes" style="display:none;">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>Planning Notes</span>
+        </div>
+        <div class="img-label">Planning</div>
+      </div>
+      <div class="img-wrap">
+        <img class="real-img" data-name="day6-2" alt="Session Photo" style="display:none;">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>Session Photo</span>
+        </div>
+        <div class="img-label">Session</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 7 -->
+  <div class="day" style="border-color: rgba(255,107,53,0.2); box-shadow: 0 0 40px rgba(255,107,53,0.06);">
+    <div class="day-header">
+      <span class="day-number">Day 07</span>
+      <div class="day-line"></div>
+      <span class="badge badge-active" style="font-size:11px; flex-shrink:0;">✦ Final Project</span>
+    </div>
+    <h2>Building the Project</h2>
+    <p class="day-subtitle">The final day — turning the Day 6 plan into a fully working Java program, tested with real input and edge cases.</p>
+    <ul class="day-points">
+      <li>Built the full <strong>Student Grade Calculator</strong> end-to-end in Java</li>
+      <li>Used <code>Scanner</code> for input, arrays to store marks, and methods to keep code modular</li>
+      <li>Added grade logic with if-else and formatted the final report using <code>printf</code></li>
+      <li>Tested the program with multiple students and edge-case inputs</li>
+      <li>Module wrapped — ready to move on to Networking and IoT next!</li>
+    </ul>
+    <div class="code-card">
+      <div class="code-card-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="filename">GradeCalculator.java</span>
+      </div>
+      <pre><span class="kw">import</span> java.util.Scanner;
+
+<span class="kw">public class</span> <span class="tp">GradeCalculator</span> {
+    <span class="kw">static char</span> getGrade(<span class="tp">double</span> pct) {
+        <span class="kw">if</span> (pct &gt;= 90) <span class="kw">return</span> <span class="st">'A'</span>;
+        <span class="kw">else if</span> (pct &gt;= 75) <span class="kw">return</span> <span class="st">'B'</span>;
+        <span class="kw">else if</span> (pct &gt;= 60) <span class="kw">return</span> <span class="st">'C'</span>;
+        <span class="kw">else if</span> (pct &gt;= 40) <span class="kw">return</span> <span class="st">'D'</span>;
+        <span class="kw">else</span> <span class="kw">return</span> <span class="st">'F'</span>;
+    }
+
+    <span class="kw">public static void</span> main(<span class="tp">String</span>[] args) {
+        <span class="tp">Scanner</span> sc = <span class="kw">new</span> <span class="tp">Scanner</span>(<span class="tp">System</span>.in);
+        <span class="tp">System</span>.out.print(<span class="st">"Number of subjects: "</span>);
+        <span class="tp">int</span> n = sc.nextInt();
+        <span class="tp">int</span>[] marks = <span class="kw">new</span> <span class="tp">int</span>[n];
+        <span class="tp">int</span> total = 0;
+
+        <span class="kw">for</span> (<span class="tp">int</span> i = 0; i &lt; n; i++) {
+            <span class="tp">System</span>.out.print(<span class="st">"Marks for subject "</span> + (i + 1) + <span class="st">": "</span>);
+            marks[i] = sc.nextInt();
+            total += marks[i];
+        }
+
+        <span class="tp">double</span> pct = (total * 100.0) / (n * 100);
+        <span class="tp">System</span>.out.printf(<span class="st">"%nTotal: %d | Percentage: %.2f%% | Grade: %c%n"</span>,
+                total, pct, getGrade(pct));
+    }
+}</pre>
+    </div>
+    <div class="practice-box">
+      <h4>🎯 Final Project Output</h4>
+      <ul>
+        <li>A fully working console-based Student Grade Calculator</li>
+        <li>Complete workflow documented: Input → Process → Output → Test</li>
+        <li>Module completed — moving on to Networking and IoT next</li>
+      </ul>
+    </div>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <img class="real-img" data-name="day7-1" alt="Final Project" style="display:none;">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>Final Project</span>
+        </div>
+        <div class="img-label">Final Output</div>
+      </div>
+      <div class="img-wrap">
+        <img class="real-img" data-name="day7-2" alt="Session Photo" style="display:none;">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>Session Photo</span>
+        </div>
+        <div class="img-label">Session</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2026 <span>Neha Rajput</span> · Digital FABLAB Portfolio · SSGMCE Shegaon</p>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.day').forEach(el => observer.observe(el));
+
+  /* ---- resolve day photos: images/java/<data-name>.<ext> ----
+     Tries a few common extensions/casings so it works whether you
+     saved as day1-1.jpg, day1-1.JPG, day1-1.jpeg, or day1-1.png. */
+  const EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'JPG', 'JPEG', 'PNG'];
+  const FOLDER = '';
+
+  function tryLoad(img, name, i) {
+    if (i >= EXTENSIONS.length) {
+      // nothing worked — leave the placeholder visible
+      return;
+    }
+    const src = `${FOLDER}${name}.${EXTENSIONS[i]}`;
+    img.onload = () => {
+      img.style.display = 'block';
+      const placeholder = img.nextElementSibling;
+      if (placeholder && placeholder.classList.contains('img-placeholder')) {
+        placeholder.style.display = 'none';
+      }
+    };
+    img.onerror = () => tryLoad(img, name, i + 1);
+    img.src = src;
+  }
+
+  document.querySelectorAll('img.real-img[data-name]').forEach(img => {
+    tryLoad(img, img.dataset.name, 0);
+  });
+</script>
+
+</body>
+</html>
