@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D Printing Module | Neha Rajput</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --orange: #ff6b35;
+    --orange-light: #ff9a6c;
+    --cyan: #00d4ff;
+    --bg: #05080f;
+    --bg2: #0a0f1e;
+    --card: rgba(255,255,255,0.04);
+    --card-border: rgba(255,255,255,0.08);
+    --text: #e8ecf4;
+    --muted: #8892aa;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.5;
+  }
+
+  .site-header {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    padding: 18px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+    background: rgba(5,8,15,0.6);
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .logo-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    background: linear-gradient(90deg, var(--orange), var(--orange-light));
+    -webkit-background-clip: text;
+    color: transparent;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-back {
+    padding: 10px 22px;
+    border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--card-border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-back:hover {
+    border-color: var(--orange);
+    color: var(--orange);
+    background: rgba(255,107,53,0.06);
+  }
+
+  .page-hero {
+    position: relative;
+    padding: 160px 10% 90px;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.3;
+    animation: float 8s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+  .blob-1 { width: 400px; height: 400px; background: radial-gradient(circle, #ff6b35, transparent 70%); top: -80px; left: -80px; }
+  .blob-2 { width: 350px; height: 350px; background: radial-gradient(circle, #ff9a6c, transparent 70%); bottom: -60px; right: -60px; animation-delay: -4s; }
+  @keyframes float {
+    from { transform: translate(0,0) scale(1); }
+    to   { transform: translate(30px,20px) scale(1.06); }
+  }
+
+  .page-hero-content { position: relative; z-index: 1; }
+
+  .hero-label {
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .page-hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(40px, 7vw, 80px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    background: linear-gradient(135deg, #fff 30%, var(--orange) 60%, var(--orange-light) 100%);
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .page-hero > .page-hero-content > p {
+    margin-top: 16px;
+    font-size: 16px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  .badge-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--card-border);
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  .badge-active {
+    background: linear-gradient(135deg, rgba(255,107,53,0.15), rgba(255,154,108,0.15));
+    border-color: rgba(255,107,53,0.4);
+    color: var(--orange);
+  }
+
+  .container {
+    padding: 60px 10% 100px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .day {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+    padding: 40px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .day.visible { opacity: 1; transform: translateY(0); }
+
+  .day::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--orange), transparent);
+  }
+
+  .day:hover {
+    border-color: rgba(255,107,53,0.2);
+    box-shadow: 0 8px 40px rgba(255,107,53,0.06);
+  }
+
+  .day-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .day-number {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--orange);
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .day-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(255,107,53,0.3), transparent);
+  }
+
+  .day h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(20px, 3vw, 28px);
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+
+  .day-subtitle {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 24px;
+    max-width: 700px;
+  }
+
+  .day-points {
+    list-style: none;
+    margin-bottom: 28px;
+  }
+
+  .day-points li {
+    font-size: 14px;
+    color: var(--text);
+    padding: 8px 0 8px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    position: relative;
+    line-height: 1.6;
+  }
+
+  .day-points li::before {
+    content: '▹';
+    position: absolute;
+    left: 0;
+    color: var(--orange);
+  }
+
+  code {
+    background: rgba(255,107,53,0.1);
+    color: var(--orange);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: 'Courier New', monospace;
+    border: 1px solid rgba(255,107,53,0.2);
+  }
+
+  .img-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .img-wrap {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 16/10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s;
+  }
+
+  .img-wrap:hover img { transform: scale(1.04); }
+
+  .img-label {
+    position: absolute;
+    bottom: 10px; left: 10px;
+    background: rgba(5,8,15,0.8);
+    border: 1px solid var(--card-border);
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 100px;
+    text-transform: uppercase;
+  }
+
+  .img-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .img-placeholder svg { opacity: 0.3; }
+
+  .practice-box {
+    background: rgba(255,107,53,0.04);
+    border: 1px solid rgba(255,107,53,0.15);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-top: 20px;
+  }
+
+  .practice-box h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--orange);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .practice-box ul { list-style: none; }
+
+  .practice-box ul li {
+    font-size: 14px;
+    color: var(--text);
+    padding: 6px 0 6px 20px;
+    position: relative;
+  }
+
+  .practice-box ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--orange);
+    font-size: 12px;
+  }
+
+  footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--card-border);
+    padding: 40px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  footer span {
+    background: linear-gradient(90deg, var(--orange), var(--orange-light));
+    -webkit-background-clip: text;
+    color: transparent;
+    font-weight: 600;
+  }
+
+  @media (max-width: 768px) {
+    .site-header { padding: 16px 24px; }
+    .page-hero { padding: 120px 6% 60px; }
+    .container { padding: 40px 6% 80px; }
+    .day { padding: 28px 24px; }
+    .img-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <span class="logo-text">FABLAB × NEHA</span>
+  <a href="index.html" class="btn-back">← Back to Portfolio</a>
+</header>
+
+<section class="page-hero">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="page-hero-content">
+    <p class="hero-label">Module 04 · FDM Printing</p>
+    <h1>3D Printing</h1>
+    <p>From CAD file to physical object — mastering FDM 3D printing from machine basics to slicing and printing</p>
+    <div class="badge-row">
+      <span class="badge badge-active">✦ Completed</span>
+      <span class="badge">🖨️ FDM Printing</span>
+      <span class="badge">6 Days</span>
+      <span class="badge">Cura · PLA · STL</span>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+
+  <!-- DAY 1 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 01</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>Introduction to the 3D Printer</h2>
+    <p class="day-subtitle">The first day was all about getting familiar with the machine itself — understanding how an FDM 3D printer works and what all its physical components do before touching any software.</p>
+    <ul class="day-points">
+      <li>Learned what <strong>FDM (Fused Deposition Modeling)</strong> is — a process that builds objects layer by layer by melting and depositing thermoplastic filament</li>
+      <li>Identified all major printer parts: <code>Frame</code>, <code>Print Bed</code>, <code>Extruder</code>, <code>Hotend</code>, <code>Nozzle</code>, <code>Stepper Motors</code>, and <code>Control Board</code></li>
+      <li>Understood the role of the <strong>X, Y, and Z axes</strong> — how the print head and bed move during printing</li>
+      <li>Learned about <strong>filament types</strong> — <code>PLA</code>, <code>ABS</code>, <code>PETG</code>, and <code>TPU</code> — and why PLA is the most common starting material</li>
+      <li>Observed the printer homing sequence and understood the role of <code>endstops</code></li>
+      <li>Understood the importance of <strong>bed leveling</strong> and first-layer adhesion for a successful print</li>
+      <li>Learned about the <strong>Bowden vs Direct Drive</strong> extruder setups and their trade-offs</li>
+    </ul>
+    <div class="practice-box">
+      <h4>🔍 What We Learned</h4>
+      <ul>
+        <li>Identified all physical components of the FDM printer by name and function</li>
+        <li>Observed a live demonstration of the printer homing and heating up</li>
+        <li>Understood the role of each axis in building a 3D object layer by layer</li>
+      </ul>
+    </div>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>Printer Photo</span>
+        </div>
+        <div class="img-label">Machine</div>
+      </div>
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>Session Photo</span>
+        </div>
+        <div class="img-label">Session</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 2 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 02</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>Machine Calibration &amp; Settings</h2>
+    <p class="day-subtitle">Going deeper into the printer — learning how to properly calibrate, load filament, and set up the machine so every print starts correctly and reliably.</p>
+    <ul class="day-points">
+      <li>Practiced <strong>manual bed leveling</strong> — adjusting the four corner knobs until the nozzle gap is consistent across the print bed</li>
+      <li>Used a piece of paper as a feeler gauge to set the correct <strong>nozzle-to-bed distance (Z offset)</strong></li>
+      <li>Learned how to <strong>load and unload filament</strong> — heating the hotend to the correct temperature and feeding the filament through the extruder</li>
+      <li>Understood printer <code>temperature settings</code>: hotend temp (typically 200°C for PLA) and bed temp (typically 60°C for PLA)</li>
+      <li>Explored the printer's <strong>LCD control panel</strong> — navigating menus, running preheat, and controlling the axes manually</li>
+      <li>Understood <strong>print speed</strong> settings and the trade-off between speed and print quality</li>
+      <li>Learned how to perform a <code>PID tuning</code> calibration for stable temperature control</li>
+    </ul>
+    <div class="practice-box">
+      <h4>🔍 What We Learned</h4>
+      <ul>
+        <li>Learned about all the critical machine settings — temperatures, speeds, and offsets</li>
+        <li>Practiced bed leveling and understood why first-layer quality is critical to every print</li>
+        <li>Understood how to load filament and prepare the printer for a print job</li>
+      </ul>
+    </div>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>Calibration</span>
+        </div>
+        <div class="img-label">Calibration</div>
+      </div>
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>Session Photo</span>
+        </div>
+        <div class="img-label">Session</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 3 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 03</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>Slicing — CAD File to G-Code</h2>
+    <p class="day-subtitle">The critical bridge between the digital CAD model and the physical printed part — learning how to use slicing software to translate an STL file into printer-ready G-Code instructions.</p>
+    <ul class="day-points">
+      <li>Understood what <strong>slicing</strong> means — dividing a 3D model into hundreds of thin horizontal layers that the printer builds one at a time</li>
+      <li>Installed and explored <strong>Ultimaker Cura</strong> — the primary slicing software used in the lab</li>
+      <li>Imported an <code>STL</code> file exported from Fusion 360 into Cura</li>
+      <li>Configured essential print settings: <code>Layer Height</code> (0.2mm standard), <code>Infill %</code>, <code>Print Speed</code>, and <code>Support</code> structures</li>
+      <li>Learned about <strong>infill patterns</strong> — Grid, Gyroid, Honeycomb — and how infill % affects strength vs print time</li>
+      <li>Enabled <code>Supports</code> for overhanging features and understood the 45° overhang rule</li>
+      <li>Explored <code>Brim</code> and <code>Raft</code> options for better bed adhesion on tricky prints</li>
+      <li>Exported the sliced file as <code>G-Code</code> and transferred it to the printer via SD card</li>
+      <li>Understood what G-Code is — a series of machine instructions (X/Y/Z movement, temperature, fan speed) that control every action of the printer</li>
+    </ul>
+    <div class="practice-box">
+      <h4>🔍 CAD → Slicer → Printer Workflow</h4>
+      <ul>
+        <li>Exported a Fusion 360 model as STL and imported it into Cura for slicing</li>
+        <li>Configured layer height, infill, and support settings for the model</li>
+        <li>Generated G-Code and understood how it controls the printer movement and temperature</li>
+      </ul>
+    </div>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>Cura Screenshot</span>
+        </div>
+        <div class="img-label">Slicer</div>
+      </div>
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>Session Photo</span>
+        </div>
+        <div class="img-label">Session</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 4 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 04</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>First Print — Project Day 1</h2>
+    <p class="day-subtitle">Putting theory into practice — setting up and running the first print of our project. Starting with a test print and then moving to the actual project part.</p>
+    <ul class="day-points">
+      <li>Ran a <strong>test calibration cube</strong> first — a 20×20×20mm cube to verify dimensional accuracy</li>
+      <li>Observed the <strong>first layer</strong> going down and checked adhesion, width, and consistency</li>
+      <li>Learned how to <strong>pause and resume</strong> a print to change filament mid-print for multi-color effects</li>
+      <li>Monitored print progress and identified common issues: <code>warping</code>, <code>stringing</code>, <code>layer shifting</code>, and <code>under-extrusion</code></li>
+      <li>Started printing <strong>Project Part 1</strong> — the base component of the final project</li>
+      <li>Used the <code>Tune</code> menu during printing to adjust live flow rate and speed</li>
+    </ul>
+    <div class="practice-box">
+      <h4>🖨️ Project Work — Day 1</h4>
+      <ul>
+        <li>Printed and verified a calibration cube for dimensional accuracy</li>
+        <li>Began printing the first component of the final project</li>
+        <li>Monitored the print and adjusted settings in real time</li>
+      </ul>
+    </div>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>Print in Progress</span>
+        </div>
+        <div class="img-label">Printing</div>
+      </div>
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>Session Photo</span>
+        </div>
+        <div class="img-label">Session</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 5 -->
+  <div class="day">
+    <div class="day-header">
+      <span class="day-number">Day 05</span>
+      <div class="day-line"></div>
+    </div>
+    <h2>Project Continues — Part 2</h2>
+    <p class="day-subtitle">Continuing the project — printing additional components, troubleshooting any issues from the first print, and refining settings for better results.</p>
+    <ul class="day-points">
+      <li>Reviewed the Part 1 print — checked for defects, measured accuracy with calipers</li>
+      <li>Adjusted slicer settings based on results — modified layer height and support density</li>
+      <li>Printed <strong>Project Part 2</strong> — the secondary component of the assembly</li>
+      <li>Learned about <strong>post-processing</strong> — removing supports carefully, sanding, and dry-fitting parts together</li>
+      <li>Understood how tolerances matter in multi-part assemblies — added small clearances in the CAD model where parts fit together</li>
+      <li>Explored <strong>print-in-place</strong> concepts — designing hinges and joints that print assembled in one go</li>
+    </ul>
+    <div class="practice-box">
+      <h4>🖨️ Project Work — Day 2</h4>
+      <ul>
+        <li>Evaluated Day 1 print and made slicer adjustments for improvement</li>
+        <li>Printed the second project component and began post-processing</li>
+        <li>Dry-fitted parts together and verified assembly fit</li>
+      </ul>
+    </div>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>Part 2 Print</span>
+        </div>
+        <div class="img-label">Print</div>
+      </div>
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>Session Photo</span>
+        </div>
+        <div class="img-label">Session</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 6 -->
+  <div class="day" style="border-color: rgba(255,107,53,0.2); box-shadow: 0 0 40px rgba(255,107,53,0.06);">
+    <div class="day-header">
+      <span class="day-number">Day 06</span>
+      <div class="day-line"></div>
+      <span class="badge badge-active" style="font-size:11px; flex-shrink:0;">✦ Final Project</span>
+    </div>
+    <h2>Project Completion &amp; Presentation</h2>
+    <p class="day-subtitle">The final day — completing the print, assembling all parts, post-processing the model, and presenting the finished project.</p>
+    <ul class="day-points">
+      <li>Completed printing all project components and removed all support structures</li>
+      <li>Post-processed the prints — sanded surfaces for a smoother finish</li>
+      <li>Assembled all parts together into the final complete project</li>
+      <li>Photographed the completed project from multiple angles for documentation</li>
+      <li>Presented the finished project — explained design choices, challenges faced, and solutions used</li>
+      <li>Reflected on what could be improved — geometry, print settings, material choice</li>
+    </ul>
+    <div class="practice-box">
+      <h4>🎯 Final Project Output</h4>
+      <ul>
+        <li>Fully assembled and post-processed 3D printed project</li>
+        <li>Complete workflow documented: CAD → STL → Slice → Print → Assemble</li>
+        <li>Presented findings and reflections to the FabLab team</li>
+      </ul>
+    </div>
+    <div class="img-grid">
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>Final Project</span>
+        </div>
+        <div class="img-label">Final Output</div>
+      </div>
+      <div class="img-wrap">
+        <div class="img-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>Session Photo</span>
+        </div>
+        <div class="img-label">Session</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2026 <span>Neha Rajput</span> · Digital FABLAB Portfolio · SSGMCE Shegaon</p>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.day').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
